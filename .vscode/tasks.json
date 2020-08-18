@@ -1,0 +1,115 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Make BUILD",
+            "type": "shell",
+            "command": "mkdir -p ${workspaceFolder}/BUILD",
+            "windows": {
+                "command": "if(-Not (Test-Path ${workspaceFolder}\\BUILD)) {New-Item -Path '${workspaceFolder}' -Name 'BUILD' -ItemType 'directory'}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean BUILD",
+            "type": "shell",
+            "command": "rm -rf ${workspaceFolder}/BUILD/*",
+            "windows": {
+                "command": "if(Test-Path ${workspaceFolder}\\BUILD) {Remove-Item –path ${workspaceFolder}\\BUILD\\* -Recurse}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "roxygen2::roxygenize()",
+            "type": "shell",
+            "command": "Rscript -e 'roxygen2::roxygenize()'",
+            "windows": {
+                "command": "Rscript.exe -e 'roxygen2::roxygenize()'"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "R CMD build",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Make BUILD",
+                "Clean BUILD",
+                "roxygen2::roxygenize()"
+            ],
+            "type": "shell",
+            "command": "R CMD build ${workspaceFolder}",
+            "options": {
+                "cwd": "${workspaceFolder}/BUILD"
+            },
+            "windows": {
+                "command": "R.exe CMD build ${workspaceFolder}",
+                "options": {
+                    "cwd": "${workspaceFolder}\\BUILD"
+                },
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "R CMD INSTALL",
+            "dependsOn": [
+                "R CMD build"
+            ],
+            "type": "shell",
+            "command": "R CMD INSTALL ${workspaceFolder}/BUILD/${workspaceFolderBasename}_*.tar.gz",
+            "windows": {
+                "command": "R.exe CMD INSTALL ${workspaceFolder}\\BUILD\\${workspaceFolderBasename}_*.tar.gz"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "R CMD check",
+            "dependsOn": [
+                "R CMD build"
+            ],
+            "type": "shell",
+            "command": "R CMD check --no-manual ${workspaceFolder}/BUILD/${workspaceFolderBasename}_*.tar.gz",
+            "options": {
+                "cwd": "${workspaceFolder}/BUILD"
+            },
+            "windows": {
+                "command": "R.exe CMD check --no-manual ${workspaceFolder}\\BUILD\\${workspaceFolderBasename}_*.tar.gz",
+                "options": {
+                    "cwd": "${workspaceFolder}\\BUILD"
+                },
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
