@@ -64,12 +64,12 @@ rho_Opt <- function(x, cc)
   #Case 1: |x| <= lower: rho is already initialized to zeros
 
   #Case 2: lower < |x| < upper
-  idx <- x > cc[2] & x < cc[3]
-  rho[idx] <- cc[4] * (Psi_Opt(x[idx], cc) - Psi_Opt(cc[2], cc))
+  if(any(idx <- x > cc[2] & x < cc[3]))
+    rho[idx] <- cc[4] * (Psi_Opt(x[idx], cc) - Psi_Opt(cc[2], cc))
 
   #Case 3: |x| >= upper
-  idx <- x >= cc[3]
-  rho[idx] <- cc[4] * (Psi_Opt(cc[3], cc) - Psi_Opt(cc[2], cc))
+  if(any(idx <- x >= cc[3]))
+    rho[idx] <- cc[4] * (Psi_Opt(cc[3], cc) - Psi_Opt(cc[2], cc))
 
   rho
 }

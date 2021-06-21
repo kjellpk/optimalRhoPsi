@@ -28,12 +28,12 @@ rho_modOpt <- function(x, cc)
   rho[idx] <- cc[4] * (0.5 * x[idx]^2)
 
   #Case 2: 1 < |x| < upper
-  idx <- (x > 1 & x < cc[3])
-  rho[idx] <- cc[4] * (0.5 + cc[2] * (Psi_Opt(x[idx], cc) - cc[5]))
+  if(any(idx <- (x > 1 & x < cc[3])))
+    rho[idx] <- cc[4] * (0.5 + cc[2] * (Psi_Opt(x[idx], cc) - cc[5]))
 
   #Case 3: |x| >= upper
-  idx <- (x >= cc[3])
-  rho[idx] <- cc[4] * cc[6]
+  if(any(idx <- (x >= cc[3])))
+    rho[idx] <- cc[4] * cc[6]
 
   rho
 }
